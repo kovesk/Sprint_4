@@ -4,33 +4,37 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.*;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 @RunWith(Parameterized.class)
 public class DropdownTest {
-    private WebDriver driver;
-    private String clicks;
-    private String xpath;
+    private DropdownPageLocators dropdownPage;
+    private String dropdownXPath;
+    private String itemXPath;
     private String expectedText;
 
 
-    public DropdownTest(String clicks, String xpath, String expectedText) {
-        this.clicks = clicks;
-        this.xpath = xpath;
+    public DropdownTest(String dropdownXPath, String itemXPath, String expectedText) {
+        this.dropdownXPath = dropdownXPath;
+        this.itemXPath = itemXPath;
         this.expectedText = expectedText;
     }
 
+
+
     @Before
     public void setup() {
-        System.setProperty("webdriver.chrome.driver","/Users/katekov/Documents/driverchrome/chromedriver-mac-x64/chromedriver");
-        driver = new ChromeDriver();
+        WebDriverManager.chromedriver().setup();
+        WebDriver driver = new ChromeDriver();
+        this.dropdownPage = new DropdownPageLocators(driver, dropdownXPath, itemXPath);
     }
+
+
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
@@ -48,27 +52,14 @@ public class DropdownTest {
 
     @Test
     public void testDropdown() {
-        // Открываем страницу
-        driver.get("https://qa-scooter.praktikum-services.ru");
-
-        By locator = By.xpath(clicks);
-        WebDriverWait wait = new WebDriverWait(driver, 50);
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"root\"]/div/div/div[5]/div[1]")));
-        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", element);
-        element.click();
-
-        // Ждём пока появится элемент списка
-        WebElement firstItem = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xpath)));
-
-        // Проверяем текст элемента списка
-        Assert.assertEquals(expectedText, firstItem.getText());
+        dropdownPage.openPage("https://qa-scooter.praktikum-services.ru");
+        dropdownPage.selectDropdownItem();
+        String actualText = dropdownPage.getSelectedItemText();
+        Assert.assertEquals(expectedText, actualText);
     }
-
 
     @After
     public void teardown() {
-        // Закрой браузер
-        driver.quit();
+        dropdownPage.closeBrowser();
     }
 }
