@@ -10,30 +10,16 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
+
 
 @RunWith(Parameterized.class)
 public class DropdownTest {
-    private DropdownPageLocators dropdownPage;
-    private String dropdownXPath;
+    public static WebDriver driver;
+    public static MainPage mainPage;
+    private String dropdownSelector;
     private String itemXPath;
     private String expectedText;
-
-
-    public DropdownTest(String dropdownXPath, String itemXPath, String expectedText) {
-        this.dropdownXPath = dropdownXPath;
-        this.itemXPath = itemXPath;
-        this.expectedText = expectedText;
-    }
-
-
-
-    @Before
-    public void setup() {
-        WebDriverManager.chromedriver().setup();
-        WebDriver driver = new ChromeDriver();
-        this.dropdownPage = new DropdownPageLocators(driver, dropdownXPath, itemXPath);
-    }
-
 
 
     @Parameterized.Parameters
@@ -49,17 +35,35 @@ public class DropdownTest {
                 {"//*[@id=\"root\"]/div/div/div[5]/div[2]/div/div[8]","//*[@id=\"accordion__panel-7\"]/p","Да, обязательно. Всем самокатов! И Москве, и Московской области."},
         });
     }
+    public DropdownTest(String dropdownSelector, String itemXPath, String expectedText) {
+        this.dropdownSelector = dropdownSelector;
+        this.itemXPath = itemXPath;
+        this.expectedText = expectedText;
+    }
+
+    @Before
+    public void setup() {
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+        mainPage = new MainPage(driver);
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.get("https://qa-scooter.praktikum-services.ru");
+    }
+    @After
+    public void teardown() {
+        driver.quit();
+    }
 
     @Test
     public void testDropdown() {
-        dropdownPage.openPage("https://qa-scooter.praktikum-services.ru");
-        dropdownPage.selectDropdownItem();
-        String actualText = dropdownPage.getSelectedItemText();
-        Assert.assertEquals(expectedText, actualText);
-    }
+        mainPage.dropdownLocator = mainPage.getDropdownLocator(dropdownSelector);
+        mainPage.itemLocator = mainPage.getItemLocator(itemXPath);
 
-    @After
-    public void teardown() {
-        dropdownPage.closeBrowser();
-    }
+        mainPage.selectDropdownItem();
+        String actualText = mainPage.getSelectedItemText();
+        Assert.assertEquals(expectedText, actualText);
+     }
+
+
 }
