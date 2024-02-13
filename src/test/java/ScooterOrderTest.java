@@ -1,9 +1,13 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
+import locators.DatePage;
+import locators.MainPage;
+import locators.NameSurnamePage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -15,27 +19,27 @@ import java.util.concurrent.TimeUnit;
 public class ScooterOrderTest {
     public static WebDriver driver;
     public static MainPage mainPage;
-    public static FirstPage firstPage;
-    public static SecondPage secondPage;
-    private String name;
-    private String surname;
-    private String address;
-    private String metroStation;
-    private String phoneNumber;
-    private String date;
-    private String rentalPeriod;
-    private String colorScooter;
-    private String comment;
+    public static NameSurnamePage namePage;
+    public static DatePage datePage;
+    private final String name;
+    private final String surname;
+    private final String address;
+    private final String metroStation;
+    private final String phoneNumber;
+    private final String date;
+    private final By rentalPeriod;
+    private final By colorScooter;
+    private final String comment;
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"Вася", "Пупкин", "Москва", "Черкизовская", "89141456657", "02/02/2024", "//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/div[2]/div[1]", "//*[@id=\"black\"]", "позвоните как доставите"},
-                {"Женя", "Яблочкин", "Москва", "Сокольники", "89023456578", "05/02/2024", "//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/div[2]/div[4]", "//*[@id=\"grey\"]", "привяжите у метро"}
+                {"Вася", "Пупкин", "Москва", "Черкизовская", "89141456657", "02/02/2024", DatePage.dayRent, DatePage.blackColor, "позвоните как доставите"},
+                {"Женя", "Яблочкин", "Москва", "Сокольники", "89023456578", "05/02/2024", DatePage.daydaydaydayRent, DatePage.greyColor, "привяжите у метро"}
         });
     }
 
-    public ScooterOrderTest(String name, String surname, String address, String metroStation, String phoneNumber, String date, String rentalPeriod, String colorScooter, String comment) {
+    public ScooterOrderTest(String name, String surname, String address, String metroStation, String phoneNumber, String date, By rentalPeriod, By colorScooter, String comment) {
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -53,8 +57,8 @@ public class ScooterOrderTest {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         mainPage = new MainPage(driver);
-        firstPage = new FirstPage(driver);
-        secondPage = new SecondPage(driver);
+        namePage = new NameSurnamePage(driver);
+        datePage = new DatePage(driver);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.get("https://qa-scooter.praktikum-services.ru");
@@ -70,15 +74,15 @@ public class ScooterOrderTest {
     public void orderUpButtonTest() {
 
         mainPage.clickUpOrderButton();
-        firstPage.fillForm(name, surname, address, metroStation, phoneNumber);
-        firstPage.nextStep();
-        secondPage.chooseDeliveryDate(date);
-        secondPage.chooseRentalPeriod(rentalPeriod);
-        secondPage.chooseScooterColor(colorScooter);
-        secondPage.leaveComment(comment);
-        secondPage.submitOrder();
-        secondPage.confirmOrder();
-        secondPage.confirmPage();
+        namePage.fillForm(name, surname, address, metroStation, phoneNumber);
+        namePage.nextStep();
+        datePage.chooseDeliveryDate(date);
+        datePage.chooseRentalPeriod(rentalPeriod);
+        datePage.chooseScooterColor(colorScooter);
+        datePage.leaveComment(comment);
+        datePage.submitOrder();
+        datePage.confirmOrder();
+        datePage.confirmPage();
 
     }
 
@@ -86,17 +90,18 @@ public class ScooterOrderTest {
     public void orderDownButtonTest() {
 
         mainPage.clickDownOrderButton();
-        firstPage.fillForm(name, surname, address, metroStation, phoneNumber);
-        firstPage.nextStep();
-        secondPage.chooseDeliveryDate(date);
-        secondPage.chooseRentalPeriod(rentalPeriod);
-        secondPage.chooseScooterColor(colorScooter);
-        secondPage.leaveComment(comment);
-        secondPage.submitOrder();
-        secondPage.confirmOrder();
-        secondPage.confirmPage();
+        namePage.fillForm(name, surname, address, metroStation, phoneNumber);
+        namePage.nextStep();
+        datePage.chooseDeliveryDate(date);
+        datePage.chooseRentalPeriod(rentalPeriod);
+        datePage.chooseScooterColor(colorScooter);
+        datePage.leaveComment(comment);
+        datePage.submitOrder();
+        datePage.confirmOrder();
+        datePage.confirmPage();
 
     }
 }
+
 
 

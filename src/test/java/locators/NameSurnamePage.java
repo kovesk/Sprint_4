@@ -1,30 +1,23 @@
+package locators;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
 
-public class FirstPage {
-    private WebDriver driver;
-    public FirstPage(WebDriver driver) {
+public class NameSurnamePage {
+    private final WebDriver driver;
+    public NameSurnamePage(WebDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(driver, this);
     }
 
 
-
-    @FindBy(xpath = "//*[@id=\"root\"]/div/div[2]/div[2]/div[1]/input")
-    private WebElement namefield;
+    public static final By nameField = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]/input");
     // поле имя
-    @FindBy(xpath = "//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/input")
-    private WebElement surnamefield;
+    public static final By surnameField = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/input");
     // поле фамилия
-    @FindBy(xpath = "//*[@id=\"root\"]/div/div[2]/div[2]/div[3]/input")
-    private WebElement addressfield;
-    // поле адресс
-    @FindBy(xpath = "//*[@id=\"root\"]/div/div[2]/div[2]/div[5]/input")
-    private WebElement phonefield;
+    public static final By addressField = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[3]/input");
+    // поле адрес
+    public static final By phoneField = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[5]/input");
     // поле телефон
 
 
@@ -39,11 +32,11 @@ public class FirstPage {
     }
     // Заполнение остальных полей
     public void fillForm(String name, String surname, String address, String metroStation, String phoneNumber) {
-        namefield.sendKeys(name);
-        surnamefield.sendKeys(surname);
-        addressfield.sendKeys(address);
+        driver.findElement(nameField).sendKeys(name);
+        driver.findElement(surnameField).sendKeys(surname);
+        driver.findElement(addressField).sendKeys(address);
         selectMetro(metroStation);
-        phonefield.sendKeys(phoneNumber);
+        driver.findElement(phoneField).sendKeys(phoneNumber);
     }
 
     // нажимаем далее для перехода на следующую страницу
@@ -52,4 +45,5 @@ public class FirstPage {
 
     }
 }
+
 
