@@ -1,23 +1,25 @@
 package locators;
 
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
-public class NameSurnamePage {
+public class ClientDataPage {
     private final WebDriver driver;
-    public NameSurnamePage(WebDriver driver) {
+    public ClientDataPage(WebDriver driver) {
         this.driver = driver;
     }
 
 
-    public static final By nameField = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]/input");
+    public static final By NAME_FIELD = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[1]/input");
     // поле имя
-    public static final By surnameField = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/input");
+    public static final By SURNAME_FIELD = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[2]/input");
     // поле фамилия
-    public static final By addressField = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[3]/input");
+    public static final By ADDRESS_FIELD = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[3]/input");
     // поле адрес
-    public static final By phoneField = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[5]/input");
+    public static final By PHONE_FIELD = By.xpath("//*[@id=\"root\"]/div/div[2]/div[2]/div[5]/input");
     // поле телефон
 
 
@@ -32,17 +34,21 @@ public class NameSurnamePage {
     }
     // Заполнение остальных полей
     public void fillForm(String name, String surname, String address, String metroStation, String phoneNumber) {
-        driver.findElement(nameField).sendKeys(name);
-        driver.findElement(surnameField).sendKeys(surname);
-        driver.findElement(addressField).sendKeys(address);
+        driver.findElement(NAME_FIELD).sendKeys(name);
+        driver.findElement(SURNAME_FIELD).sendKeys(surname);
+        driver.findElement(ADDRESS_FIELD).sendKeys(address);
         selectMetro(metroStation);
-        driver.findElement(phoneField).sendKeys(phoneNumber);
+        driver.findElement(PHONE_FIELD).sendKeys(phoneNumber);
     }
 
     // нажимаем далее для перехода на следующую страницу
     public void nextStep() {
         driver.findElement(By.xpath("//*[@id=\"root\"]/div/div[2]/div[3]/button")).click();
-
+    }
+    public void confirmOrderPage() {
+        new WebDriverWait(driver, 5);
+        String currentUrl = driver.getCurrentUrl();
+        Assert.assertEquals("Expected URL does not match the actual URL", "https://qa-scooter.praktikum-services.ru/order", currentUrl);
     }
 }
 

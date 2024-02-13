@@ -1,7 +1,7 @@
 import io.github.bonigarcia.wdm.WebDriverManager;
-import locators.DatePage;
+import locators.OrderDataPage;
 import locators.MainPage;
-import locators.NameSurnamePage;
+import locators.ClientDataPage;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 public class ScooterOrderTest {
     public static WebDriver driver;
     public static MainPage mainPage;
-    public static NameSurnamePage namePage;
-    public static DatePage datePage;
+    public static ClientDataPage namePage;
+    public static OrderDataPage datePage;
     private final String name;
     private final String surname;
     private final String address;
@@ -34,8 +34,8 @@ public class ScooterOrderTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"Вася", "Пупкин", "Москва", "Черкизовская", "89141456657", "02/02/2024", DatePage.dayRent, DatePage.blackColor, "позвоните как доставите"},
-                {"Женя", "Яблочкин", "Москва", "Сокольники", "89023456578", "05/02/2024", DatePage.daydaydaydayRent, DatePage.greyColor, "привяжите у метро"}
+                {"Вася", "Пупкин", "Москва", "Черкизовская", "89141456657", "02/02/2024", OrderDataPage.DAY_RENT, OrderDataPage.BLACK_COLOR, "позвоните как доставите"},
+                {"Женя", "Яблочкин", "Москва", "Сокольники", "89023456578", "05/02/2024", OrderDataPage.DAY_DAY_DAY_DAY_RENT, OrderDataPage.GREY_COLOR, "привяжите у метро"}
         });
     }
 
@@ -57,8 +57,8 @@ public class ScooterOrderTest {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         mainPage = new MainPage(driver);
-        namePage = new NameSurnamePage(driver);
-        datePage = new DatePage(driver);
+        namePage = new ClientDataPage(driver);
+        datePage = new OrderDataPage(driver);
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.get("https://qa-scooter.praktikum-services.ru");
@@ -88,17 +88,8 @@ public class ScooterOrderTest {
 
     @Test
     public void orderDownButtonTest() {
-
         mainPage.clickDownOrderButton();
-        namePage.fillForm(name, surname, address, metroStation, phoneNumber);
-        namePage.nextStep();
-        datePage.chooseDeliveryDate(date);
-        datePage.chooseRentalPeriod(rentalPeriod);
-        datePage.chooseScooterColor(colorScooter);
-        datePage.leaveComment(comment);
-        datePage.submitOrder();
-        datePage.confirmOrder();
-        datePage.confirmPage();
+        namePage.confirmOrderPage();
 
     }
 }
